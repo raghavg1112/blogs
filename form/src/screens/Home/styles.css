@@ -1,0 +1,19 @@
+.image-container {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .image-container img {
+    max-width: 100%;
+    animation: zoomAndMove 5s infinite alternate;
+  }
+  
+  @keyframes zoomAndMove {
+    0%, 100% {
+      transform: scale(1) translateY(0);
+    }
+    50% {
+      transform: scale(1.1) translateY(-10px);
+    }
+  }
+ 
