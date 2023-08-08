@@ -37,7 +37,7 @@ export default function Edit_blog({}) {
   };
   const submit = async (e) => {
     let response = await Axios.post("http://localhost:5000/edit_blog", {
-      _id: input.id,
+      _id: input._id,
       blog: input.blog,
       title: input.title,
       img: input.img,

@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useState } from "react";
-import Axios from "axios";
+import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-// import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin } from "@react-oauth/google";
 import jwt_decode from "jwt-decode";
-import Alerts from "../components/Alerts";
-import GoogleOAuth from "../components/GoogleOAuth";
+import { Alert } from "@mui/material";
 // import { AppContext } from "../context/AppProvider";
 export default function Login() {
   // const { setUser } = useContext(AppContext);
@@ -20,14 +19,14 @@ export default function Login() {
 
   const submit = async (e) => {
     e.preventDefault();
-    let response = await Axios.post("http://localhost:5000/login", {
+    let response = await axios.post("http://localhost:5000/login", {
       username: input.username,
       password: input.password,
     });
     response = response.data;
     console.log(response);
     if (!response.success) {
-      <Alerts val="0" message={response.message} />;
+      <Alert>{response.message}</Alert>;
     } else {
       localStorage.setItem("user_id", response.user_id);
       localStorage.setItem("Username", response.name);
@@ -39,6 +38,18 @@ export default function Login() {
   if (localStorage.getItem("user_id")) {
     Navigate("/");
   }
+  const handleGoogleLogin = async () => {
+    let response = await axios.post("http://localhost:5000/googleLogin", {
+      name: localStorage.getItem("username"),
+      email: localStorage.getItem("user_id"),
+    });
+    response = response.data;
+    if (!response.success) {
+      <Alert>{response.message}</Alert>;
+    } else {
+      Navigate("/");
+    }
+  };
   return (
     <>
       <section className="vh-75 mt-5 " style={{ "background-color": "#eee;" }}>
@@ -55,7 +66,21 @@ export default function Login() {
                       <p className="text-center h1 fw-bold mb-5 mx-1  mt-2">
                         Login
                       </p>
-                      <GoogleOAuth></GoogleOAuth>
+                      <div className="mb-3 ">
+                        <GoogleLogin
+                          onSuccess={async (credentialResponse) => {
+                            const info = jwt_decode(
+                              credentialResponse.credential
+                            );
+                            localStorage.setItem("user_id", info.email);
+                            localStorage.setItem("username", info.name);
+                            await handleGoogleLogin();
+                          }}
+                          onError={() => {
+                            <Alert>Login failed</Alert>;
+                          }}
+                        />
+                      </div>
                       <form className="mx-1 mx-md-3">
                         <div className="d-flex flex-row align-items-center mb-4">
                           <i className="fas fa-envelope fa-lg me-3 fa-fw"></i>

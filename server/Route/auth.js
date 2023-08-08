@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const User = require("../model/userSchema");
 const Blog = require("../model/blog_schema");
 const jwt = require("jsonwebtoken");
-const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const setwebtoken = "Mynameunf4uifnu4nfui4fnhubschbehjoidoidn";
 
@@ -39,21 +38,20 @@ router.post("/login", async (req, res) => {
     name: find.name,
   });
 });
-router.post("/googleLogin", (req, res) => {
-  const { email } = req.body;
-  User.find({ email: email });
+
+router.post("/googleLogin", async (req, res) => {
+  const { name, email } = req.body;
+  const find = await User.findOne({ email: email });
   if (!find) {
-    const user = new User({ email: email });
-    User.save()
-      .then()
-      .catch((err) => {
-        return res
-          .status(200)
-          .json({ success: false, message: "Please Try again" });
-      });
+    const user = new User({ name: name, email: email });
+    await user.save();
   }
-  return res.status(200).json({ success: true });
+  return res.status(201).json({
+    success: true,
+    message: "User Exists and Verified through Google Login",
+  });
 });
+
 router.post("/signUp", async (req, res) => {
   const { name, password, c_password } = req.body;
   const email = req.body.username;
@@ -96,7 +94,7 @@ router.get("/my_old_blogs", async (req, res) => {
   const user_id = req.query.user_id;
   let blogs = await Blog.find({ user_id: user_id });
   console.log(`my old blogs`);
-  console.log(blogs);
+  // console.log(blogs);
   if (!blogs) {
     res
       .status(200)
@@ -154,7 +152,7 @@ router.post("/delete_blog", async (req, res) => {
 router.post("/edit_blog", async (req, res) => {
   console.log(`edit`);
   const blog = req.body;
-  console.log(req.body);
+  // console.log(req.body);
   const filter = { _id: blog._id };
   const update = {
     _id: blog._id,
@@ -162,24 +160,22 @@ router.post("/edit_blog", async (req, res) => {
     title: blog.title,
     img: blog.img,
   };
-  Blog.findOneAndUpdate(filter, update, (err, data) => {
-    console.log(`updating`);
-    if (err) {
-      return res
-        .status(200)
-        .json({ success: false, message: "failed to edit" });
-    }
-    return res
-      .status(200)
-      .json({ success: true, message: "Successfully edited" });
-  });
+  // console.log(filter);
+  // console.log(update);
+  const check = await Blog.findOneAndUpdate(filter, update);
+  if (!check) {
+    return res.status(200).json({ success: false, message: "failed to edit." });
+  }
+  return res
+    .status(200)
+    .json({ success: true, message: "edited successfully" });
 });
 
 router.get("/getToBeEditedBlog", async (req, res) => {
   const blog_id = req.query.blog_id;
   let blog = await Blog.find({ _id: blog_id });
 
-  console.log(blog);
+  // console.log(blog);
 
   if (!blog) {
     res.status(200).json({ success: false, message: "Failed to load Blog" });

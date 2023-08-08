@@ -6,7 +6,8 @@ export default function Navbar() {
   const { setUser } = useContext(AppContext);
   const Navigate = useNavigate();
   const logout = (e) => {
-    setUser("");
+    localStorage.clear("user_id");
+    localStorage.clear("username");
     Navigate("/");
   };
   return (
@@ -30,7 +31,7 @@ export default function Navbar() {
             </button>
           </div>
           <div>
-            {localStorage.getItem("authToken") ? (
+            {localStorage.getItem("user_id") ? (
               <div
                 className="collapse navbar-collapse"
                 id="navbarSupportedContent"

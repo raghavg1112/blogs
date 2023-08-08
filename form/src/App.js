@@ -19,8 +19,8 @@ function App() {
   let slug = useParams();
   return (
     <AppProvider>
-      <GoogleOAuthProvider>
-        <div className="App" style={{ height: "85vh" }}>
+      <GoogleOAuthProvider clientId="736699391766-n0n2ojmmht8cblpijm6v3nvv8ukk3g8r.apps.googleusercontent.com">
+        <div className="App" style={{ minHeight: "85vh" }}>
           <Router>
             <Navbar />
             <Routes>

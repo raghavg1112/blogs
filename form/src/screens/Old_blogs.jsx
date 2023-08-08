@@ -55,17 +55,23 @@ export default function Old_blogs() {
                   <div className="card m-2 shadow-lg">
                     <div className="card-body m-3">
                       <div className="row">
-                        <div className="col-lg-4 d-flex justify-content-center align-items-center mb-4 mb-lg-0">
+                        <div
+                          className="col-lg-4 d-flex justify-content-center align-items-center mb-4 mb-lg-0"
+                          style={{ objectFit: "cover" }}
+                        >
                           <img
                             src={blogs.img}
                             className="rounded-circle img-fluid shadow-1"
                             alt="woman avatar"
-                            style={{ width: "100", height: "100" }}
+                            style={{ width: "150px", height: "150px" }}
                           />
                         </div>
                         <div className="col-lg-8">
-                          <p className="text-muted fw-bold mb-4">
-                            {blogs.blog}
+                          <p
+                            className="text-muted fw-bold mb-3"
+                            style={{ fontSize: "x-large" }}
+                          >
+                            {blogs.title}
                           </p>
                           <p className="fw-light text-muted mb-0">
                             Written By:-
